@@ -1,0 +1,1 @@
+Utilisation de dotnet 10.0 pour mac, et 8.0 pour windows
