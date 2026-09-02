@@ -3,6 +3,8 @@
 Du 24 août au 30 octobre 2026, la classe CMID3b et moi avons parcouru un chemin d'apprentissage de la programmation fonctionnelle.  
 Ce document relate les péripéties de ce voyage.
 
+<hr>
+
 ## Semaine 35 (24 août)
 
 ### Lundi
@@ -24,15 +26,83 @@ Notre but c'est qu'au bout de cette étape:
 - On est d'accord sur les [modalités d'évaluation](evaluation/DEP.md) du module
 
 - On a vérifié nos paquetage de départ, en [révisant les concepts OO](exos/consolidation-OO/).
-  - La terminologie ...
-  - Un Dojo pratique ...
+  - La terminologie : c'était une bonne chose qu'on le fasse, plusieurs termes n'étaient pas vraiment maîtrisés
+  - Un Dojo pratique : on n'a pas été au bout du programme, mais plein de questions importantes ont été remontées et discutées. On part avec une bonne base.
 
 - On s'est attaqué à une thématiques: les [paradigmes de programmation](https://github.com/XCarrel/323-Programmation_fonctionnelle/blob/main/supports/source/01-paradigmes.md)
 
-- On a revu la [manière de suivre un cours](USEME.md) avec Github et chacun mis en place son fork de [mon repo](https://github.com/XCarrel/323-Programmation_fonctionnelle), dans lequel il a créé son espace personnel
+- On a revu la [manière de suivre un cours](USEME.md) avec Github et chacun mis en place son fork de [mon repo](https://github.com/XCarrel/323-Programmation_fonctionnelle), dans lequel il a créé son espace personnel. J'ai les références de tous les forks. @Albert, @Snehan : je ne vois pas votre espace personnel dans le repo
 
-- On a étudié une deuxième thématique: [généricité](https://etml-inf.github.io/323-Programmation_fonctionnelle/supports/source/01b-genericite.html) (en matière de programmation)
-- On a mis en oeuvre la généricité avec [l'exercice 01](https://etml-inf.github.io/323-Programmation_fonctionnelle/exos/fil-rouge/esport/01-equipe-genericite/) du fil rouge. Ça nous a permis de voir au passage:
-  - Comment structurer une application console avec deux projet (un programme et une librairie)
-  - Comment gérer les arguments d'un programme en CLI
-- On sait comment faire pour être prêt pour le checkpoint #1 la semaine prochaine
+- On a étudié une deuxième thématique: [généricité](https://etml-inf.github.io/323-Programmation_fonctionnelle/supports/source/01b-genericite.html) (en matière de programmation). C'est complexe, la pente d'apprentissage est raide.
+
+- On a commencé la mise en oeuvre la généricité avec [l'exercice 01](https://etml-inf.github.io/323-Programmation_fonctionnelle/exos/fil-rouge/esport/01-equipe-genericite/) du fil rouge. On a vu comment
+  - Structurer une application console avec deux projet (un programme et une librairie)
+  - Déclarer notre première classe générique
+
+On n'est pas arrivé au bout de l'exercice, on reprendra ça la semaine prochaine
+
+<hr>
+
+## Semaine 36 (31 août)
+### Lundi
+
+La mission du jour était: finaliser l'analyse fonctionnelle et la planification initiale. Idéalement, il aurait dû être possible de faire la livraison de vendredi dès aujourd'hui en fin de matinée.
+
+J'ai passé vers à peu près tout le monde. Le constat est que la rédaction de User Stories n'est pas encore maîtrisée, personne n'ayant pu me montrer une user story bien formulée du premier coup.  
+Je tiens à ce que le codage ne commence qu'à partir du moment où au moins une US est bien formulée. Je préfère avoir un petit nombre de US de bonne qualité que beaucoup de US de mauvaise qualité. Conséquence:
+
+> Pour la livraison du 4 septembre, je ne damande pas une analyse fonctionnelle complète. Je n'attends que une ou deux US totalisant au minimum 5 bons tests d'acceptance 
+
+N'ayant reçu aucune livraison pour l'instant (mardi), j'en déduis que tout le monde a encore du travail à fournir pour arriver à ce stade.
+
+### Mercredi
+
+On a fait le checkpoint #1. Les résultats sont ... moyens. En même temps, très peu étaient ceux qui avaient révisé.
+
+On a vu ensemble la solution du début de l'étape 1 de l'application ESportApp, dans laquelle on sépare clairement les aspects métiers et les "logistique":
+- Le projet `ESportApp` contient des classes propres au domaine (métier): `CS2Match`, `LolMatch`, `ValorantMatch`)
+- Le projet `Dataseries` contient les moyens de gérer des séries de `<un_certain_type>`
+
+On a vu qu'avec C#, on peut aussi **stocker une fonction dans une variable** .
+
+Et on a vu comment **donner une fonction comme argument à une autre fonction**. on a vu la théorie des [fonctions d'ordre supérieur](./supports/source/02a-fonctions-sup.md)
+
+On s'est attaqué à l'étape 1 de l'[exercice 2](./exos/fil-rouge/esport/02-recrues-generation/README.md) du fil rouge, dans laquelle on importe les données à partir de fichiers CSV en s'appuyant sur des fonctions spécialisées pour parser les données.
+
+C'est dur de passer de la théorie au code. Je mets [ma solution](./exos/fil-rouge/esport/ESportApp/) à disposition comme aide/tuteur.
+
+On a expliqué rapidement les concepts de lazy/eager loading et classes d'extension.
+
+On a commencé à jouer avec nos statistiques grâce aux premières méthodes LinQ de la [cheatsheet](./supports/linq-cheatsheet.pdf): combien de victoires ? A quand remonte la dernière défaite de Léa ? Quelles sont les stats du troisième match de Dylan ? ...
+
+On ne comprenait pas pourquoi on n'arrivait pas à compter les victoires de Léa.  
+Ce mystère est élucidé: le premier test (`cols[8] == 'TRUE'`), tout comme le deuxième (`cols[8] == 'VRAI'`) échouaient parce que la valeur dans le fichier est `true` en minuscule. Nous avons en plus été mystifié par Excel qui se croit toujours plus malin que nous: il lit `true` dans le fichier, mais il affiche `VRAI` parce qu'il est configuré en français.  
+`bool.Parse(cols[8])` suggéré par Tony est une meilleure approche, mais attention car il ne tient pas compte de la locale et ça se crashe si on met `VRAI` dans le fichier.
+
+Les dix dernières minutes se passent "en roue libre". J'ai l'impression qu'il y a saturation.
+
+<hr>
+
+## Semaine 37 (7 septembre)
+### Lundi
+
+Objectif: pouvoir commencer la réalisation
+
+Prérequis:
+- Avoir au moins une US valide dans laquelle la séquence de démarrage de l'application est décrite
+- Avoir des données à disposition (5 séries cohérentes de 500 valeurs chacune)
+
+### Mercredi
+
+On va faire le checkpoint #2 pour voir ce que vous avez retenu au sujet des fonctions d'ordre supérieur et des première méthodes d'extension LinQ
+
+On a grimpé une pente bien raide la semaine passée. Cette semaine, on va pouvoir récupérer un peu sur un chemin bien plus plat.  
+Mais il va quand même falloir avancer...
+
+Chacun commencera par finaliser - si besoin - sa version de ESportApp qui lit les fichiers .csv. Cet état fera l'objet d'un commit. 
+- Génération
+- Interface CLI
+  - `--help`
+  - `--folder folder_name`
+  - `--error [strict | soft]` 
+- Transformer (Select)
