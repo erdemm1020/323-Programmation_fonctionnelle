@@ -14,10 +14,25 @@ namespace DataSeries
         public static DataSeries<T> From(IEnumerable<T> source)
             => new DataSeries<T>(source);
 
-        public static DataSeries<T> FromCsv(string path, Func<string[], T> parser) 
+        public static DataSeries<T> FromCsv(string path, Func<string[], T> parser)
         {
-            var lines = File.ReadAllLines(path).Skip(1);
-            return new DataSeries<T>(lines.Select(line => parser(line.Split(','))));
+            List<T> data = new List<T>();
+
+            try
+            {
+                List<string> content  = File.ReadAllLines(path).ToList();
+                foreach (string line in content.Skip(1))
+                {
+                    string[] cols = line.Split(',');
+                    data.Add(parser(cols));
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Erreur d'ouverture fichier {0}", e);
+                throw;
+            }
+            return From(data);
         }
 
         public int Count => _data.Count();
