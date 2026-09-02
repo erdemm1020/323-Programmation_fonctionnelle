@@ -13,6 +13,28 @@ Console.WriteLine($"Valorant match: {valorant.Count}");
 Console.WriteLine($"LoL match: {lol.Count}");
 Console.WriteLine($"CS2 match: {cs2.Count}");
 
+var raphaelGenerated = DataSeries<Cs2Match>.From(
+    MatchGenerator.GenerateCs2("Raphaël", 20)
+);
+Console.WriteLine(raphaelGenerated.Count); // 20
+
+Func<Cs2Match, bool> isValid = m =>
+    m.Kills + m.Assists <= 50 &&
+    m.Deaths >= 1;
+
+var raphaelValid = raphaelGenerated.Values.Where(isValid);
+Console.WriteLine($"Avant : {raphaelGenerated.Count}, après : {raphaelValid.Count()}");
+
+void ExportCs2(string player, IEnumerable<Cs2Match> matches, string path)
+{
+    var header = "date,player,map,start_side,kills,deaths,assists,mvps,won";
+    var lines = matches.Select((m, i) =>
+        $"2024-01-{i + 1:D2},{m.Player},{m.Map},{m.StartSide},{m.Kills},{m.Deaths},{m.Assists},{m.Mvps},{m.Won.ToString().ToLower()}"
+    );
+    File.WriteAllLines(path, lines.Prepend(header));
+}
+
+ExportCs2("Raphaël", raphaelValid, "raphael_generated.csv");
 
 Environment.Exit(67);
 
