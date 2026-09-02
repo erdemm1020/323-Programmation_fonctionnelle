@@ -5,9 +5,9 @@ DataSeries<DataPoint<ValorantMatch>> valorant;
 DataSeries<DataPoint<Cs2Match>> cs2;
 DataSeries<DataPoint<LolMatch>> lol;
 
-valorant = DataSeries <DataPoint<ValorantMatch>>.FromCsv("./data/valorant.csv", ParseValorant);
-lol = DataSeries<DataPoint<LolMatch>>.FromCsv("./data/lol.csv", ParseLol);
-cs2 = DataSeries<DataPoint<Cs2Match>>.FromCsv("./data/cs2.csv", ParseCs2);
+valorant = DataSeries <DataPoint<ValorantMatch>>.FromCsv("data/valorant.csv", ParseValorant);
+lol = DataSeries<DataPoint<LolMatch>>.FromCsv("data/lol.csv", ParseLol);
+cs2 = DataSeries<DataPoint<Cs2Match>>.FromCsv("data/cs2.csv", ParseCs2);
 
 Console.WriteLine($"Valorant match: {valorant.Count}");
 Console.WriteLine($"LoL match: {lol.Count}");
@@ -35,6 +35,14 @@ void ExportCs2(string player, IEnumerable<Cs2Match> matches, string path)
 }
 
 ExportCs2("Raphaël", raphaelValid, "raphael_generated.csv");
+
+
+DataPoint<ValorantMatch> bestGame = valorant.Values
+    .OrderByDescending(vm => vm.Value.Kills)
+    .First();
+
+Console.Write(bestGame.Value.Kills);
+
 
 Environment.Exit(67);
 
