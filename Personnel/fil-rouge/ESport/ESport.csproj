@@ -2,6 +2,17 @@
   <ItemGroup>
     <ProjectReference Include="..\DataSeries\DataSeries.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="data\lol.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="data\valorant.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="data\cs2.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>

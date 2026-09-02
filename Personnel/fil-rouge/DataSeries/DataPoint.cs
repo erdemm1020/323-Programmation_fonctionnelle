@@ -14,7 +14,7 @@ namespace DataSeries
         public DataPoint(DateTime timestamp, T value)
         {
             Timestamp = timestamp;
-            Value = value; // Ici, on affecte le paramètre 'value' à la propriété 'Value'
+            Value = value;
         }
     }
 }
