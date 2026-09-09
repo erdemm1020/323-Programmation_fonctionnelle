@@ -5,45 +5,41 @@ DataSeries<DataPoint<ValorantMatch>> valorant;
 DataSeries<DataPoint<Cs2Match>> cs2;
 DataSeries<DataPoint<LolMatch>> lol;
 
-valorant = DataSeries <DataPoint<ValorantMatch>>.FromCsv("data/valorant.csv", ParseValorant);
+valorant = DataSeries<DataPoint<ValorantMatch>>.FromCsv("data/valorant.csv", ParseValorant);
 lol = DataSeries<DataPoint<LolMatch>>.FromCsv("data/lol.csv", ParseLol);
 cs2 = DataSeries<DataPoint<Cs2Match>>.FromCsv("data/cs2.csv", ParseCs2);
 
-Console.WriteLine($"Valorant match: {valorant.Count}");
-Console.WriteLine($"LoL match: {lol.Count}");
-Console.WriteLine($"CS2 match: {cs2.Count}");
+// Console.WriteLine($"Valorant match: {valorant.Count}");
+// Console.WriteLine($"LoL match: {lol.Count}");
+// Console.WriteLine($"CS2 match: {cs2.Count}");
 
-var raphaelGenerated = DataSeries<Cs2Match>.From(
+
+// 1. Déclaration compatible
+DataSeries<DataPoint<Cs2Match>> raphaelGenerated = DataSeries<DataPoint<Cs2Match>>.From(
     MatchGenerator.GenerateCs2("Raphaël", 20)
 );
-Console.WriteLine(raphaelGenerated.Count); // 20
+
+Console.WriteLine("{0} matchs générés", raphaelGenerated.Count); // 20
 
 Func<Cs2Match, bool> isValid = m =>
     m.Kills + m.Assists <= 50 &&
     m.Deaths >= 1;
 
-var raphaelValid = raphaelGenerated.Values.Where(isValid);
-Console.WriteLine($"Avant : {raphaelGenerated.Count}, après : {raphaelValid.Count()}");
 
-void ExportCs2(string player, IEnumerable<Cs2Match> matches, string path)
-{
-    var header = "date,player,map,start_side,kills,deaths,assists,mvps,won";
-    var lines = matches.Select((m, i) =>
-        $"2024-01-{i + 1:D2},{m.Player},{m.Map},{m.StartSide},{m.Kills},{m.Deaths},{m.Assists},{m.Mvps},{m.Won.ToString().ToLower()}"
+
+static void ExportCSV(DataSeries<DataPoint<Cs2Match>> series, string path) =>
+    File.WriteAllLines(
+        path,
+        series.Values
+            .Select(dp => $"{dp.Timestamp:yyyy-MM-dd},{dp.Value.Player},{dp.Value.Map},{dp.Value.StartSide},{dp.Value.Kills},{dp.Value.Deaths},{dp.Value.Assists},{dp.Value.Mvps},{dp.Value.Won.ToString().ToLower()}")
+            .Prepend("date,player,map,start_side,kills,deaths,assists,mvps,won")
     );
-    File.WriteAllLines(path, lines.Prepend(header));
-}
 
-ExportCs2("Raphaël", raphaelValid, "raphael_generated.csv");
+ExportCSV(raphaelGenerated, "test.csv");
 
 
-DataPoint<ValorantMatch> bestGame = valorant.Values
-    .OrderByDescending(vm => vm.Value.Kills)
-    .First();
-
-Console.Write(bestGame.Value.Kills);
-
-
+// var raphaelValid = raphaelGenerated.Filter(isValid);
+// Console.WriteLine($"Avant : {raphaelGenerated.Count}, après : {raphaelValid.Count}");
 Environment.Exit(67);
 
 

@@ -28,5 +28,6 @@ namespace ESport
         public int Assists { get; }
         public int Mvps { get; }
         public bool Won { get; }
+        
     }
 }
