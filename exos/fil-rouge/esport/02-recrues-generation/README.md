@@ -4,8 +4,8 @@
 
 ## Concepts théoriques
 
-- [Thématique 02 — Filter et fonctions d'ordre supérieur](../../../../thematiques/02-filter-fonctions-sup.md)
-- [Fonctions d'ordre supérieur](../../../../supports/source/02a-fonctions-sup.md)
+- [Thématique 02 — Filter et fonctions d&#39;ordre supérieur](../../../../thematiques/02-filter-fonctions-sup.md)
+- [Fonctions d&#39;ordre supérieur](../../../../supports/source/02a-fonctions-sup.md)
 - [Closures](../../../../supports/source/02a-fonctions-sup.md#closures-captures-de-variables)
 - [Évaluation paresseuse](../../../../supports/source/02b-filter.md#evaluation-paresseuse-deferred-execution)
 
@@ -18,7 +18,7 @@ doit simuler des données plausibles pour compléter l'historique.
 
 ---
 
-## Prérequis — `DataSeries<T>` comme vraie série temporelle
+## 2.0. Prérequis — `DataSeries<T>` comme vraie série temporelle
 
 > À faire **avant** l'étape 1 si l'exercice 01 a été réalisé sans `DataPoint<T>`.
 
@@ -77,9 +77,9 @@ new DataPoint<ValorantMatch>(new DateTime(2024, 1, 15), new ValorantMatch("Léa"
 
 ---
 
-## Étape 1 — `DataSeries<T>.FromCsv` (import fichier)
+## 2.1. — `DataSeries<T>.FromCsv` (import fichier)
 
-Première **fonction d'ordre supérieur** concrète du cours : une méthode qui reçoit une *fonction*
+Première **fonction d'ordre supérieur** concrète du cours : une méthode qui reçoit une _fonction_
 en paramètre.
 
 **Avant de coder :** `FromCsv` doit fonctionner pour Valorant, CS2 et LoL.
@@ -233,7 +233,7 @@ public DataSeries<T> FilterByDate(Func<DateTime, bool> predicate)
 
 ---
 
-## Étape 2 — Générer 20 matchs CS2 pour Raphaël
+## 2.2 — Générer 20 matchs CS2 pour Raphaël
 
 `Enumerable.Range` génère une séquence d'entiers. Combiné avec `Select`, il devient un
 **générateur fonctionnel** — l'équivalent d'une boucle for, mais déclaratif :
@@ -290,7 +290,7 @@ public static class MatchGenerator
 }
 ```
 
-> La lambda passée à `Select` utilise `rng`, `maps`, `sides` et `start` déclarés *en dehors* d'elle :
+> La lambda passée à `Select` utilise `rng`, `maps`, `sides` et `start` déclarés _en dehors_ d'elle :
 > c'est une **closure** — la fonction capture les variables de son environnement.
 > → [Closures](../../../../supports/source/02a-fonctions-sup.md#closures-captures-de-variables)
 
@@ -367,7 +367,7 @@ C'est le comportement attendu : des contraintes métier éliminent des cas impos
 
 ---
 
-## Étape 3 — Exporter en CSV
+## 2.3 — Exporter en CSV
 
 **Avant de coder :** quel format doit avoir le CSV exporté pour être compatible avec `FromCsv`
 de l'étape 1 ? Regarder l'en-tête de `data/cs2.csv`.
@@ -416,14 +416,23 @@ similaires adaptées à chaque format CSV.
 > Le paramètre `seed` peut varier par joueur pour obtenir des profils différents :
 > `GenerateCs2("Kiara", 20, seed: 7)` → profil AWPer avec plus de kills et plus de variance.
 
+> **Piège de la paresse** — `Enumerable.Range(...).Select(...)` n'exécute rien tant que
+> personne ne parcourt la séquence, et le `Random` du générateur est capturé par la lambda.
+> Parcourir deux fois la série (un `Count` puis un export, par exemple) relance donc les
+> tirages et produit **deux jeux de données différents**. Matérialiser le résultat
+> (`.ToList()`) avant de le confier à `DataSeries<T>.From` règle le problème.
+> → [Évaluation paresseuse](../../../../supports/source/02b-filter.md#evaluation-paresseuse-deferred-execution)
+
 ---
 
-## Étape 4 — Interface CLI
+## 2.4 — Interface CLI
 
-Ajouter le flag `--generate <joueur|all>` pour déclencher la génération depuis la ligne de commande.
+Ajouter le flag `--generate <joueur|all>` pour déclencher la génération depuis la ligne de commande,
+et l'ajouter au texte affiché par `--help` (un flag non documenté n'existe pas).
 
 **Avant de coder :** Si `--generate all` est passé, comment obtenir la liste des quatre joueurs ?
 Comment structurer le code pour que `--generate Raphaël` ne génère que ce joueur ?
+Chaque recrue joue à un jeu différent — comment aiguiller vers le bon générateur ?
 Pourquoi utiliser `return` après la génération ?
 
 <details>
@@ -439,17 +448,44 @@ if (args.Contains("--generate"))
         : new[] { target };
 
     foreach (var player in players)
-    {
-        var series = MatchGenerator.GenerateCs2(player, 20);
-        ExportCs2(series.Filter(isValid), $"{player.ToLower()}_generated.csv");
-        Console.WriteLine($"{player} : données générées et exportées");
-    }
+        Generate(player);
+
     return;
+}
+
+// Chaque recrue a son jeu : Raphaël et Kiara en CS2, Dylan en Valorant, Noé en LoL.
+// Les trois générateurs et les trois exports ne retournent pas le même type —
+// d'où l'aiguillage.
+void Generate(string player)
+{
+    var file = $"{player.ToLower()}_generated.csv";
+
+    switch (player)
+    {
+        case "Raphaël":
+        case "Kiara":
+            ExportCs2(MatchGenerator.GenerateCs2(player, 20).Filter(dp => isValidCs2(dp.Value)), file);
+            break;
+
+        case "Dylan":
+            ExportValorant(MatchGenerator.GenerateValorant(player, 20).Filter(dp => isValidValorant(dp.Value)), file);
+            break;
+
+        case "Noé":
+            ExportLol(MatchGenerator.GenerateLol(player, 20).Filter(dp => isValidLol(dp.Value)), file);
+            break;
+
+        default:
+            Console.WriteLine($"Joueur inconnu : {player}");
+            return;
+    }
+
+    Console.WriteLine($"{player} : données générées et exportées dans {file}");
 }
 ```
 
-Le même prédicat `isValid` sert pour tous les joueurs — une fonction stockée dans
-une variable se réutilise comme n'importe quelle valeur.
+Le même prédicat de validité sert pour tous les joueurs d'un même jeu — une fonction stockée
+dans une variable se réutilise comme n'importe quelle valeur.
 
 </details>
 

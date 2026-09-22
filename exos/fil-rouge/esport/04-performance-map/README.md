@@ -1,6 +1,6 @@
 # Exercice 04 — Calculer le KDA par joueur
 
-> Partie 3 — `.Transform()` + `.Normalize()` + `.Smooth()`
+> Partie 3 — `.Transform()` + `Normalize()` + `Smooth()` (hors `DataSeries<T>`, temporaire)
 
 ## Concepts théoriques
 
@@ -23,7 +23,7 @@ Normaliser le KDA permet ensuite de le comparer à des séries d'autres natures
 ## Concept FP : Map = transformer sans modifier
 
 `.Transform()` applique une fonction à **chaque élément** et retourne une **nouvelle série**.
-La source n'est jamais modifiée — même principe que `.Filter()`.
+La source n'est jamais modifiée.
 
 ```
 [m1, m2, m3] → Transform(f) → [f(m1), f(m2), f(m3)]
@@ -31,18 +31,35 @@ La source n'est jamais modifiée — même principe que `.Filter()`.
 
 ---
 
-## Étape 1 — Implémenter `.Transform(mapper)`
+## 4.1 — Calculer les KDA (ou tout autre indicateur) `.Transform(mapper)`
 
-**Avant de coder :** `Transform` doit changer le type — passer de `DataSeries<ValorantMatch>`
-à `DataSeries<double>`. Quelle méthode LINQ applique une fonction à chaque élément ?
+Nous voulons que notre librairie `DataSeries` offre la possibilité d'appliquer une transformation à tous les éléments d'une série.  
+Nous tenons au fait que la librairie reste générale (générique!) pour pouvoir être utilisée dans des domaines d'application différents les uns des autres.  
+Nous devons donc être capable de faire la transformation de ... n'importe quoi en ... n'importe quoi !  
+C'est mission impossible! Sauf si on nous fournit l'outil (la fonction) qui sait faire cette transformation.
+
+**Avant de coder :**
 
 <details>
-<summary>Indice</summary>
+<summary>Quelle méthode d'ordre supérieur de LINQ applique une fonction à chaque élément ?</summary>
 
-`Select(mapper)` applique une fonction à chaque élément et retourne une nouvelle séquence.
-La méthode doit être générique : `Transform<TResult>(Func<T, TResult> mapper)`.
+`.Select(mapper)`
 
 </details>
+<details>
+<summary>De quel type partons-nous et quel type obtient-on quand on s'intéresse au KDA ?</summary>
+
+`ValorantMatch` -> `double`  
+`Cs2Match` -> `double`  
+`LolMatch` -> `double`
+
+</details>
+<details>
+<summary>De quelle(s) manière(s) peut-on définir le mapper ?</summary>
+Avec une lambda ou une fonction nommée
+</details>
+
+Avec les réponses en tête, on peut s'attaquer à
 
 ```csharp
 public DataSeries<TResult> Transform<TResult>(Func<T, TResult> mapper)
@@ -52,147 +69,122 @@ public DataSeries<TResult> Transform<TResult>(Func<T, TResult> mapper)
 }
 ```
 
-<details>
-<summary>Voir la solution</summary>
-
-```csharp
-public DataSeries<TResult> Transform<TResult>(Func<T, TResult> mapper)
-    => DataSeries<TResult>.From(_data.Select(mapper));
-```
-
-</details>
-
-Calculer le KDA pour Valorant et chaîner avec Filter :
-
-```csharp
-var kdaLea = valorant
-    .Filter(m => m.Player == "Léa")
-    .Transform(m => (m.Kills + m.Assists) / (double)(m.Deaths == 0 ? 1 : m.Deaths));
-
-Console.WriteLine(string.Join(", ", kdaLea.Values.Select(v => v.ToString("F2"))));
-```
+Allez-y et Calculez le KDA de tous les matches Valorant.
+Chainez ça avec d'autres fonctions pour obtenir le KDA de tous les matches de Léa, de tous les matches gagnés, ...
 
 Reproduire pour CS2 (Raphaël, Kiara) et LoL (Noé).
 
 > Observation : `Transform` change le type — `DataSeries<ValorantMatch>` devient
 > `DataSeries<double>`. La bibliothèque reste générique, le domaine est dans `EsportApp`.
 
-> Le chaînage `Filter(...).Transform(...)` est possible *uniquement* parce que chaque méthode
-> retourne un *nouvel* objet au lieu de modifier la source. Immutabilité → composition.
+> Le chaînage `Where(...).Transform(...)` est possible _uniquement_ parce que chaque méthode
+> retourne un _nouvel_ objet au lieu de modifier la source. Immutabilité → composition.
 > → [Composition de pipelines](../../../../supports/source/03-Map.md#composition-de-pipelines)
 
 ---
 
-## Étape 2 — `.Normalize()` — comparer entre jeux
+## 4.2 — Comparer entre différents jeux avec `.Normalize()`
 
-**Avant de coder :** que signifie normaliser une série entre 0 et 1 ?
-Quelle formule permet de ramener n'importe quelle valeur dans `[0, 1]` ?
+On ne peut pas comparer des pommes et des poires, c'est bien connu.
+Tout comme on ne peut pas comparer les stats de Valorant avec celles de Cs2 ou de Lol. Une valeur qui représent un super KDA dans Valorant peut paraître ridicule dans Cs2.
+On veut donc que notre librairie soit capable de **normaliser** une série.
+
+**Avant de coder :**
 
 <details>
-<summary>Indice sur la formule</summary>
+<summary>Que signifie normaliser une série entre 0 et 1 ?</summary>
+Faire en sorte que la plus grande valeur de la série soit 1 et la plus petite 0
+</details>
+
+<details>
+<summary>Quelle formule permet de ramener n'importe quelle valeur dans `[0, 1]` ?</summary>
 
 `(valeur - min) / (max - min)` — le minimum devient 0, le maximum devient 1.
+
 Cas particulier : si `max == min` (toutes les valeurs identiques), retourner 0 pour éviter une division par zéro.
 
 </details>
 
+On est prêts pour coder:
+
 ```csharp
-public DataSeries<double> Normalize()
+// Evalue chaque objet de la série avec l'outil (fonction) d'évaluation fourni,
+// et retourne une série de valeurs entre 0 et 1
+public DataSeries<double> Normalize(Func<T, double> evaluator)
 {
-    var values = _data.Cast<double>().ToList();
-    var min    = // ...
-    var max    = // ...
-    var range  = // ...
-    return DataSeries<double>.From(
-        values.Select(v => /* formule de normalisation */)
-    );
+    // Evalue tous les éléments
+    var values = ...;
+    // Prend les valeurs extrêmes
+    var min = ...;
+    var max = ...;
+    // et les utilise pour normaliser
+    return new DataSeries<double> ...;
 }
 ```
 
-<details>
-<summary>Voir la solution</summary>
+Comparer les KDA normalisés dans le programme :
 
 ```csharp
-public DataSeries<double> Normalize()
-{
-    var values = _data.Cast<double>().ToList();
-    var min    = values.Min();
-    var max    = values.Max();
-    var range  = max - min;
-    return DataSeries<double>.From(
-        values.Select(v => range == 0 ? 0.0 : (v - min) / range)
-    );
-}
-```
-
-</details>
-
-Comparer les KDA normalisés :
-
-```csharp
-var kdaLeaNorm     = kdaLea.Normalize();
-var kdaRaphaelNorm = kdaRaphael.Normalize();
-var kdaNoeNorm     = kdaNoe.Normalize();
+var kdaLeaNorm     = kdaLea.Normalize(...);
+var kdaRaphaelNorm = kdaRaphael.Normalize(...);
+var kdaNoeNorm     = kdaNoe.Normalize(...);
 // Toutes les valeurs sont maintenant dans [0, 1]
 ```
 
+Exposer la normalisation avec un flag `--normalize`. Contrairement à `--stat`, il n'attend
+aucune valeur : sa seule présence suffit — c'est un interrupteur, pas un réglage.
+
+```csharp
+bool normalize = args.Contains("--normalize");
+
+// Normalize évalue ET ramène dans [0, 1] : inutile d'enchaîner Transform et Normalize
+DataSeries<double> valeurs = normalize
+    ? retenus.Normalize(selecteur)
+    : retenus.Transform(selecteur);
+```
+
+> Vérification immédiate : avec `--normalize`, la plus petite valeur affichée vaut
+> exactement `0.00` et la plus grande `1.00`. Toujours vrai, quel que soit le `--stat`.
+
 ---
 
-## Étape 3 — `.Smooth(windowSize)` et la closure
+## 4.3 — Lisser une courbe avec `.Smooth(windowSize)` et la closure
 
-**Avant de coder :** la moyenne glissante d'indice `i` avec une fenêtre de taille `w`
-utilise les éléments aux indices `[i-w+1 .. i]`. Comment générer tous les indices avec LINQ ?
+**Avant de coder :**
+
+> la moyenne glissante d'indice `i` avec une fenêtre de taille `w` utilise les éléments aux indices `[i-w+1 .. i]`.
+
+<details>
+<summary>Comment générer tous les indices pertinents avec LINQ ?</summary>
+
+`Range(w, _data.Count()-w)`
+
+</details>
+
+Encore un
 
 <details>
 <summary>Indice sur la structure</summary>
+Vous aurez certainement recours à :
 
-`Enumerable.Range(0, values.Count)` génère tous les indices.
-Pour chaque indice `i`, prendre `values.Skip(Max(0, i - w + 1)).Take(w)` puis `.Average()`.
-La variable `windowSize` capturée par le lambda est une **closure** — observer ce que ça implique.
-→ [Closures dans les transformations](../../../../supports/source/03-Map.md#closures-dans-les-transformations)
+```
+Enumerable.Range(x,y)
+Skip(n)
+Take(n)
+Average()
+```
+
+Allez les voir dans la cheatsheet.
 
 </details>
 
-```csharp
-public DataSeries<double> Smooth(int windowSize)
-{
-    var values = _data.Cast<double>().ToList();
-    return DataSeries<double>.From(
-        Enumerable.Range(0, values.Count)
-            .Select(i =>
-            {
-                // extraire la fenêtre autour de i et calculer la moyenne
-                // ...
-            })
-    );
-}
-```
-
-<details>
-<summary>Voir la solution</summary>
-
-```csharp
-public DataSeries<double> Smooth(int windowSize)
-{
-    var values = _data.Cast<double>().ToList();
-    return DataSeries<double>.From(
-        Enumerable.Range(0, values.Count)
-            .Select(i =>
-            {
-                var window = values.Skip(Math.Max(0, i - windowSize + 1)).Take(windowSize);
-                return window.Average();
-            })
-    );
-}
-```
-
-</details>
+Et c'est à vous de jouer...
 
 Observer la closure :
 
 ```csharp
 int window = 3;
-var smoothed = kdaLea.Smooth(window);
+var smoothed = MathHelpers.Smooth(kdaLea, window);
 window = 10; // Sans effet — window a été copiée à l'appel de Smooth (passage d'argument)
 ```
 
@@ -202,11 +194,44 @@ window = 10; // Sans effet — window a été copiée à l'appel de Smooth (pass
 > lambda capture, et il ne change plus.
 > → [Closures](../../../../supports/source/02a-fonctions-sup.md#closures-captures-de-variables)
 
+Exposer le lissage avec un flag `--smooth <n>`, qui lui attend une valeur — et qui peut se
+combiner à `--normalize` (on normalise d'abord, on lisse ensuite) :
+
+```csharp
+int smoothWindow = 0;
+if (args.Contains("--smooth") && !int.TryParse(args[Array.IndexOf(args, "--smooth") + 1], out smoothWindow))
+    smoothWindow = -1;          // valeur non numérique → message d'erreur, pas d'exception
+
+if (smoothWindow > 0)
+    valeurs = valeurs.Smooth(v => v, smoothWindow);   // série déjà numérique : évaluateur identité
+```
+
+**Avant d'afficher :** une série de n valeurs lissée sur une fenêtre de `w` en produit
+`n - w + 1`. Les dates, elles, sont toujours au nombre de n — à quelle date rattacher la
+première moyenne ?
+
+<details>
+<summary>Voir la convention retenue</summary>
+
+Une moyenne glissante est datée par le **dernier** match de sa fenêtre : les `w - 1` premiers
+matchs n'ouvrent aucune fenêtre complète. À l'affichage, il faut donc sauter ces `w - 1`
+premières dates, sinon chaque valeur est attribuée au mauvais match.
+
+C'est le genre de décalage silencieux qu'aucun compilateur ne signale : avec `--smooth 3`,
+la première valeur affichée doit porter la date du **3e** match.
+
+</details>
+
+> Ne pas confondre `--smooth <n>` avec `--window <n>`, qui arrive à l'exercice 05 :
+> `--smooth` lisse la courbe affichée (n valeurs → n - w + 1 valeurs), `--window` découpera
+> la série en segments pour en calculer des statistiques.
+
 ---
 
-## Étape 4 — Interface CLI
+## 4.4 — Interface CLI
 
-Ajouter `--stat kda|kills|assists` pour choisir la transformation à afficher.
+Ajouter `--stat kda|kills|assists` pour choisir la transformation à afficher (défaut : `kda`),
+et le documenter dans `--help`.
 
 **Avant de coder :** Comment mapper une valeur de flag (`"kda"`, `"kills"`, `"assists"`) à une
 transformation différente ? Plutôt qu'une chaîne de `if/else` (ou même un `switch`),
@@ -250,13 +275,67 @@ une ligne dans la table, et l'appel à `Transform` ne change pas.
 
 ---
 
+## 4.5 — L'aide complète
+
+Quatre exercices, dix flags. `EsportApp --help` (ou un lancement sans aucun argument) doit
+maintenant afficher exactement ceci — et `EsportApp --version` doit répondre `EsportApp 0.4`.
+
+```text
+Usage: EsportApp [options]
+
+  Analyse des performances de Team Helvetia (Valorant, CS2, LoL).
+
+Sélection des données
+  --game   valorant|cs2|lol    Jeu à analyser              (défaut : les trois)
+  --player <nom>               Restreindre à un joueur     (défaut : tous)
+  --filter wins|losses|all     Issue des matchs retenus    (défaut : all)
+
+Analyse
+  --stat   kda|kills|assists   Indicateur calculé/affiché  (défaut : kda)
+  --normalize                  Ramène l'indicateur dans [0.0, 1.0]
+  --smooth <n>                 Moyenne glissante sur n valeurs
+                                 (normalisation puis lissage, dans cet ordre)
+
+Données
+  --generate <joueur|all>      Simule et exporte les matchs manquants, puis quitte
+  --error  strict|soft|hard    Traitement des valeurs aberrantes (défaut : soft)
+                                 strict : les affiche et s'arrête
+                                 soft   : les élimine et continue
+                                 hard   : les élimine, sauve le CSV nettoyé, continue
+
+Divers
+  --help                       Affiche cette aide
+  --version                    Affiche la version
+```
+
+Deux vérifications que l'aide n'est pas qu'un texte décoratif :
+
+- tout flag affiché doit fonctionner, et tout flag qui fonctionne doit être affiché ;
+- un flag inconnu (`--rank`, qui n'arrive qu'à l'exercice 05) ou une valeur inconnue
+  (`--stat headshots`, `--smooth abc`, `--smooth 0`) doit produire un message clair,
+  pas une exception non gérée ni un silence ;
+- `--smooth 1` doit afficher exactement la même chose que sans le flag : une fenêtre de 1
+  est l'identité. Si ce n'est pas le cas, l'implémentation de `Smooth` a un décalage d'indice.
+
+Exemples de pipelines complets à essayer :
+
+```bash
+EsportApp --game valorant --player Léa --filter wins --stat kda
+EsportApp --game lol --player Noé --stat assists
+EsportApp --game valorant --player Léa --stat kda --normalize --smooth 3
+EsportApp --generate all
+EsportApp --error strict
+```
+
+---
+
 ## Étape bonus (avancé) — SelectMany
 
 > Étape optionnelle — pour aller plus loin.
 
 Les KDA sont calculés par jeu, mais le coaching staff veut la liste **plate** de tous les
 KDA de l'équipe, tous jeux confondus. Le problème : une collection de séries est une
-collection *imbriquée* — `Select` produirait une séquence de séquences.
+collection _imbriquée_ — `Select` produirait une séquence de séquences.
 
 ```csharp
 var allSeries = new[] { kdaLea, kdaRaphael, kdaNoe, kdaDylan, kdaKiara };
@@ -274,6 +353,10 @@ Console.WriteLine($"KDA de l'équipe entière : {allKda.Count()} valeurs");
 
 ## Vérification
 
+- `--help` et `--version` rendent la main sans rien charger
+- `--stat kills` et `--stat assists` changent les nombres affichés, pas le pipeline
+- `--normalize` : la plus petite valeur affichée vaut 0.00, la plus grande 1.00
+- `--smooth 3` sur les 13 matchs de Léa affiche 11 valeurs, la première datée du 3e match
 - `kdaLea.Count` = 13 (matchs de Léa uniquement)
 - Valeurs normalisées dans [0.0, 1.0] — min = 0.0, max = 1.0 exactement
 - `Smooth(1)` ne change rien (fenêtre = 1 = identité)

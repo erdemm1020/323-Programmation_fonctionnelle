@@ -5,9 +5,9 @@ Ce document relate les péripéties de ce voyage.
 
 <hr>
 
-## Semaine 35 (24 août)
+## Etape 1
 
-### Lundi
+### Lundi 24 août
 
 - On a découvert le thème du projet Plot Those Lines, chacun a choisi un domaine
 - Tout le monde a référencé son repo dans MarketPlace. Certains doivent encore ajouter un Readme.
@@ -17,7 +17,7 @@ Ce document relate les péripéties de ce voyage.
 
 - J'ai publié et annoncé la version 1.3 de gistodoc, pour importer les issues Github dans un document Word
 
-### Mercredi
+### Mercredi 26 août
 
 Notre but c'est qu'au bout de cette étape:
 
@@ -39,9 +39,9 @@ On n'est pas arrivé au bout de l'exercice, on reprendra ça la semaine prochain
 
 <hr>
 
-## Semaine 36 (31 août)
+## Etape 2
 
-### Lundi
+### Lundi 31 août
 
 La mission du jour était: finaliser l'analyse fonctionnelle et la planification initiale. Idéalement, il aurait dû être possible de faire la livraison de vendredi dès aujourd'hui en fin de matinée.
 
@@ -51,7 +51,7 @@ J'ai passé vers à peu près tout le monde. Le constat est que la rédaction de
 
 N'ayant reçu aucune livraison pour l'instant (mardi), j'en déduis que tout le monde a encore du travail à fournir pour arriver à ce stade.
 
-### Mercredi
+### Mercredi 2 septembre
 
 On a fait le checkpoint #1. Les résultats sont ... moyens. En même temps, très peu étaient ceux qui avaient révisé.
 
@@ -80,9 +80,9 @@ Les dix dernières minutes se passent "en roue libre". J'ai l'impression qu'il y
 
 <hr>
 
-## Semaine 37 (7 septembre)
+## Etape 3
 
-### Lundi
+### Lundi 7 septembre
 
 Rappel de l'une des valeurs Agile:
 
@@ -106,24 +106,23 @@ J'ai pu discuter 1-1 avec chacun. Malheureusement, MarketPlace était instable, 
 
 Mais tout le monde a une story en cours de réalisation.
 
-### Mercredi
+### Mercredi 9 septembre
 
-On va faire le checkpoint #2 pour voir ce que vous avez retenu au sujet des fonctions d'ordre supérieur et des première méthodes d'extension LinQ.  
-Si vous avez terminé avant la fin du temps à disposition, utilisez ce temps pour compléter et/ou committer votre JdT. 
+On a fait le checkpoint #2 sur les fonctions d'ordre supérieur et des première méthodes d'extension LinQ.
 
-On a grimpé une pente bien raide la semaine passée. Cette semaine, on va pouvoir récupérer un peu sur un chemin bien plus plat.
-Mais il va quand même falloir avancer, avec un objectif général de la semaine: savoir **transformer** les objets d'une liste.
+On a grimpé une pente bien raide la semaine passée. Cette semaine, on n'a pas abordé de sujet théorique fondamental.
+L'objectif général de la semaine: savoir **transformer** les objets d'une liste.
 
 Mais d'abord, synchronisation ...
 
-J'observe des usages du repo du cours très variables: de "aucune activité" pour certains à "plusieurs coups d'avance" pour d'autres. J'ai de la peine à savoir où vous en êtes. Du coup, je vous demande à chacun de créer un fichier `PointDeSituation.md` dans votre dossier perso et de le commit/push.
+J'observe des usages du repo du cours très variables: de "aucune activité" pour certains à "plusieurs coups d'avance" pour d'autres. J'ai de la peine à savoir où vous en êtes. Chacun a créé un fichier `PointDeSituation.md` dans son dossier perso, commit/push.
 
-Quand c'est fait, vous avancez votre ESportApp jusqu'à qu'elle soit capable de lire les fichiers CSV. Pendant ce temps, je consulte vos retours.  
-Si vous avez atteint ce point, attendez les autres en vous attaquant à l'un des [autres exercices](./exos/README.md).
+On a revu ensemble encore une fois la solution fonctionnelle avec l'import des fichiers CSV. Je considère que ce chapitre là est clos.
 
-On se synchronise en revoyant ensemble une solution qui importe nos stats à partir de fichiers CSV.
+On a discuté des méthodes de génération (`Range`) et de transformation (`Select`) sur la base la cheatsheet.
 
-On discute des méthodes de génération (`Range`) et de transformation (`Select`) sur la base la cheatsheet.
+On discute des méthodes de génération (`Range` dans la cheatsheet) et de transformation (`Select` dans les [slides](./slides/03-map.md)) .
+La mission donnée était:
 
 - Vous utilisez `Range` et `Random` (bien connu) pour réaliser l'[étape 2](https://github.com/XCarrel/323-Programmation_fonctionnelle/tree/main/exos/fil-rouge/esport/02-recrues-generation).
 
@@ -131,22 +130,25 @@ On discute des méthodes de génération (`Range`) et de transformation (`Select
 
 - Exercez les fonctions de tri avec l'[exercice 3](./exos/fil-rouge/esport/03-tri-filter/README.md)
 
-N'oubliez pas de semer des petits cailloux blancs le long de votre chemin ...
+- N'oubliez pas de semer des petits cailloux blancs le long de votre chemin (commits), plus précisément:
+  - feat(ESportApp): générer 20 matchs pour Raphael
+  - feat(ESportApp): sauver les fichiers, CSV
+  - feat(ESportApp): ajouter les commandes CLI pour générer
+  - feat(ESportApp): détecter les outliers
+  - feat(ESportApp): traiter les cas d'erreurs
+  - feat(ESportApp): ajouter les commandes CLI pour le traitement des erreurs
+
+Au final, une petite moitié de la classe a commencé à faire le traitement d'erreur.  
+À moins d'évaluer cela un petit peu plus finement à partir des commits effectués
 
 <hr>
 
-## Semaine 38 (14 septembre)
+## Etape 4
 
-### Lundi
+### Lundi 14 septembre
 
-Il faut qu'on discute, parce que je fais un constat qui me dérange et que je ne trouve pas les bonnes raisons qui pourraient l'expliquer.  
-Peut-être que quelque chose m'échappe.
+"Discussion" au sujet de l'absence de mise à jour du journal de travail suite au constat suivant:
 
-On travaille 3 heures ensemble le lundi matin, sur un projet dans lequel vous devez tenir un journal de travail et appliquer de bonnes pratiques en matière de contrôle de version.
-
-Je m'attends donc à ce que dans chacun de vos repos je trouve un dernier commit fait aux alentours de 11h25, qui serait nommé "chore(jdt): Mettre à jour avec les activités de ce matin".
-
-Or voici ce que je vois:
 ```
 albert          2026-09-04 10:26     feat(readme): ajout du rapport
 damienc         2026-09-07 09:26     feat(P_FUN): Ajout structure du projet
@@ -161,3 +163,139 @@ theophile       2026-09-07 10:06     add base avalonia template
 tony            2026-09-07 09:27     Auto-generate files via JDT-Generator
 zidane          2026-09-07 11:27     doc(jdt): Mise à jour du jdt et création du doc
 ```
+
+"Discussion", entre guillemets, parce que ça ne va que dans un sens: personne ne réagit quand je dis que je ne trouve pas cela normal. Personne ne réagit non plus quand je demande si quelqu'un trouve que je suis trop exigeant.
+
+Malheureusement, je dois constater dans l'après-midi que le message n'a toujours pas passé auprès de certains (3) élèves.
+
+J'ai ajouté des remarques dans MarketPlace.  
+Ceux qui n'en n'ont pas ou peu = bonne nouvelle, ça se passe bien.  
+Les autres peuvent - s'ils le désirent - réagir à la suite de mes commentaires.
+
+Un constat général : maintenant que le code a commencé, je veux pouvoir l'exécuter. Plusieurs ont choisi de partir sur Avalonia et je n'ai pas suffisamment d'informations à ma disposition pour savoir comment faire.
+
+### Mercredi 16 septembre
+
+On est en effectif réduit aujourd'hui: huit sur douze.
+
+On a fait le checkpoint #3
+
+Ensuite on a fait le point sur les exercices proposés la semaine passée:
+
+- L'exercice 2 porte sur la génération et la transformation
+  - 2.0 `DataSeries<T>` comme vraie série temporelle
+  - 2.1 Parser les fichiers CSV
+  - 2.1 Générer des matches (Range)
+  - 2.2 Sauver en CSV (Select)
+  - 2.3 CLI pour demander la génération
+- L'exercice 3 porte sur le filtrage
+  - 3.1 Détecter les erreurs (Where)
+  - 3.2 Supprimer les erreurs (Where)
+  - 3.3 CLI pour définir le comportement face aux erreurs
+
+La synthèse est validée (pour les présents):
+
+|           | Présent |  2.1  |  2.2  |  2.3  |  2.4  |  3.1  |  3.2  |  3.3  |
+| --------- | :-----: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| albert    |   \*    |  OK   |       |       |       |       |       |       |
+| damienc   |   \*    |  OK   |  OK   |  OK   |       |       |       |       |
+| damienr   |   \*    |  OK   |  OK   |  OK   |  OK   |       |       |       |
+| erdem     |         |  OK   |  OK   |  OK   |       |       |       |       |
+| gianmarco |   \*    |  OK   |  OK   |  OK   |       |       |       |       |
+| gillian   |         |  OK   |  OK   |       |       |       |       |       |
+| kiril     |   \*    |  OK   |  OK   |  OK   |       |       |       |       |
+| sacha     |   \*    |  OK   |  OK   |       |  OK   |       |       |       |
+| snehan    |   \*    |  OK   |  OK   |  OK   |       |       |       |       |
+| theophile |         |  OK   |  OK   |       |  OK   |       |       |       |
+| tony      |   \*    |  OK   |  OK   |  OK   |  OK   |       |       |       |
+| zidane    |         |  OK   |  OK   |       |       |       |       |       |
+
+On a une petite heure (jusqu'à la pause) pour finir ces exercices.
+
+Mais avant cela, certains ont dû défaire quelques changements demandés précédemment 😤.  
+En effet, au début de l'étape 2, nous avions voulu intégrer un Timestamp pour avoir de vraies Timeseries. Nous avions passé de `private readonly IEnumerable<T> _data;` à `private readonly IEnumerable<DataPoint<T>> _data;`. Cela a introduit un degré de complexité supplémentaire significatif pour la suite.  
+Le retour en arrière se fait ainsi:
+
+- Revenir à `private readonly IEnumerable<T> _data;`
+- Supprimer la classe `DataPoint<T>`
+- Ajouter une propriété `public DateTime Timestamp { get; }` aux trois types de matches
+- Corriger toutes les erreurs que cela cause
+
+Rappel au moment de s'y mettre: faire apparaître le numéro de l'étape dans le nom des commits, p.ex.: `feat(ESportApp): Réaliser l'étape 2.2 (Sauver en CSV)`
+
+Après la pause on a regardé l'énoncé de l'[exercice 4](./exos/fil-rouge/esport/04-performance-map/), qui a pour but de consolider le concept de transformation en générant des **indicateurs** à partir de nos données.
+
+Petit moment d'explication sur les paramètre CLI:
+
+- Comment les passer depuis Visual Studio (Déboguer > Propriété de débogage > Paramètres de ligne de commande)
+- Comment les traiter `static void Main(string[] args)`
+
+Situation en fin de matinée:
+|           | Présent |  2.1  |  2.2  |  2.3   |  2.4   |  3.1   |  3.2   |  3.3   |  4.1   |  4.2   |  4.3   |  4.4   |
+| --------- | :-----: | :---: | :---: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: |
+| albert    |    _    |  ok   |       | **OK** |        |        |   KO   |        |        |        |        |        |
+| damienc   |    _    |  ok   |  ok   |   ok   | **OK** | **OK** |        |        |        |        |        |        |
+| damienr   |    _    |  ok   |  ok   |   ok   |   ok   | **OK** | **OK** | **OK** | **OK** | **OK** | **OK** | **OK** |
+| erdem     |         |  ok   |  ok   |   ok   |        |        |        |        |        |        |        |        |
+| gianmarco |    _    |  ok   |  ok   |   ok   |        | **OK** | **OK** |        |        |        |        |        |
+| gillian   |         |  ok   |  ok   |        |        |        |        |        |        |        |        |        |
+| kiril     |    _    |  ok   |  ok   |   ok   | **OK** | **OK** | **OK** |        |        |        |        |        |
+| sacha     |    _    |  ok   |  ok   |        |   ok   | **OK** | **OK** | **OK** |        |        |        |        |
+| snehan    |    _    |  ok   |  ok   |   ok   | **OK** | **OK** | **OK** |        |        |        |        |        |
+| theophile |         |  ok   |  ok   |        |   ok   |        |        |        |        |        |        |        |
+| tony      |    _    |  ok   |  ok   |   ok   |   ok   | **OK** | **OK** | **OK** | **OK** |        |        |        |
+| zidane    |         |  ok   |  ok   |        |        |        |        |        |        |        |        |        |
+
+Cette étape conclut la thématique "Transformer". Le checkpoint #4 portera sur les même contenus théorique, mais devrait être plus facile pour vous avec l'expérience acquise ce matin.
+
+La semaine prochaine, on abordera la thématique "Réduire".
+
+## Etape 5
+
+### Lundi 21 septembre
+
+C'est un jour de repos (Jeûne Fédéral)
+
+### Mercredi 23 septembre
+
+On fait le checkpoint #4, qui n'aborde aucun thème nouveau. On reste sur le filtrage et la projection.
+
+Le thème de la semaine, par contre, est un gros morceau: réduire.
+
+Jusqu'ici, avec `Select`, les transformations de données étaient un pour un, c'est-à-dire que chaque élément de notre collection était transformé en un élément de type différent:
+
+- Objet en nombre (KDA)
+- Objet en objet (OrderSummary)
+- Nombre en objet (Génération à partir de `Range`).
+
+Dans tous ces cas, la collection obtenue après `Select` a la même longueur que la collection originale.
+
+Nous allons voir maintenant des opérations qui synthétisent plusieurs éléments pour produire un résultat plus compact:
+
+| Catégorie            | Entrée     | Sortie                | Exemples                                |
+| -------------------- | ---------- | --------------------- | --------------------------------------- |
+| Test                 | collection | bool                  | `Any`, `All`, `Contains`                |
+| Agrégation numérique | collection | valeur                | `Sum`, `Min`, `Max`, `Average`, `Count` |
+| Réduction générale   | collection | valeur/objet          | `Aggregate`                             |
+| Regroupement         | collection | collection de groupes | `GroupBy`                               |
+| Indexation           | collection | autre structure       | `ToDictionary`, `ToHashSet`             |
+
+Pour commencer, on regarde la [théorie de l'agrégation](./supports/source/04-Reduce.md).
+
+Et ensuite, on met tout cela en pratique avec [l'exercice 5](./exos/fil-rouge/esport/05-classement-fold/) du fil rouge.
+
+Situation en fin de matinée:
+|           | Présent |  5.1  |  5.2  |  5.3  |
+| --------- | :-----: | :---: | :---: | :---: |
+| albert    |         |       |       |       |
+| damienc   |         |       |       |       |
+| damienr   |         |       |       |       |
+| erdem     |         |       |       |       |
+| gianmarco |         |       |       |       |
+| gillian   |         |       |       |       |
+| kiril     |         |       |       |       |
+| sacha     |         |       |       |       |
+| snehan    |         |       |       |       |
+| theophile |         |       |       |       |
+| tony      |         |       |       |       |
+| zidane    |         |       |       |       |
