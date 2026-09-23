@@ -14,11 +14,15 @@ const string version = "0.4";
 string[] knownFlags =
 {
     "--help", "--version", "--game", "--player", "--filter", "--stat",
-    "--normalize", "--smooth", "--generate", "--error"
+    "--normalize", "--smooth", "--generate", "--error",
+    "--extract", "--mme", "--hasCrushed", "--hasBeenCrushed", "--hasBeenGod", "--progress" // <-- NOUVEAUX FLAGS
 };
 
 // Les flags qui attendent une valeur juste après eux
-string[] valueFlags = { "--game", "--player", "--filter", "--stat", "--smooth", "--generate", "--error" };
+string[] valueFlags = { 
+    "--game", "--player", "--filter", "--stat", "--smooth", "--generate", "--error",
+    "--extract", "--hasCrushed", "--hasBeenCrushed", "--hasBeenGod" // <-- NOUVEAUX FLAGS À VALEUR
+};
 
 // ─── Flags sans valeur ───────────────────────────────────────────────────────
 
@@ -59,6 +63,8 @@ string? player = ValueOf("--player");
 string filterMode = ValueOf("--filter") ?? "all";
 string statName = ValueOf("--stat") ?? "kda";
 string errorMode = ValueOf("--error") ?? "soft";
+
+string extractMode = ValueOf("--extract");
 
 // --normalize n'attend pas de valeur : sa seule présence suffit
 bool normalize = args.Contains("--normalize");
@@ -212,6 +218,9 @@ void ShowHelp()
     Console.WriteLine("                                 soft   : les élimine et continue");
     Console.WriteLine("                                 hard   : les élimine, sauve le CSV nettoyé, continue");
     Console.WriteLine();
+    Console.WriteLine("Aggregate");
+    Console.WriteLine("  --extract min|max|avg|mme  ");
+    Console.WriteLine();
     Console.WriteLine("Divers");
     Console.WriteLine("  --help                       Affiche cette aide");
     Console.WriteLine("  --version                    Affiche la version");
@@ -282,6 +291,35 @@ bool Report<T>(string label,
         Console.WriteLine();
         return true;
     }
+    
+    if (extractMode != null)
+    {
+        double resultat = 0;
+        string labelText = extractMode;
+
+        if (extractMode == "min")
+        {
+            resultat = retenus.Min(selecteur);
+            labelText = $"Min ({statName})";
+        }
+        else if (extractMode == "max")
+        {
+            resultat = retenus.Max(selecteur);
+            labelText = $"Max ({statName})";
+        }
+        else if (extractMode == "avg")
+        {
+            resultat = retenus.Avg(selecteur);
+            labelText = $"Moyenne ({statName})";
+        }
+        else if (extractMode == "mme")
+        {
+            resultat = retenus.MME(selecteur);
+            labelText = $"MME ({statName}) - forme du moment";
+        }
+
+        Console.WriteLine($"  {labelText} : {resultat:F2}");
+    }
 
     // Une moyenne glissante est datée par le DERNIER match de sa fenêtre :
     // les windowSize-1 premiers matchs n'ouvrent aucune fenêtre complète.
@@ -335,6 +373,7 @@ void Generate(string joueur)
             break;
     }
 }
+
 
 // ─── Parsers : le domaine est ici, la bibliothèque l'ignore ──────────────────
 
