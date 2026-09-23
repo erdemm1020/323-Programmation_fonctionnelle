@@ -103,6 +103,40 @@ namespace DataSeries
                     .Select(debut => valeurs.Skip(debut).Take(windowSize).Average())
                     .ToList());
         }
+        
+        
+        // AGGREGATE
+        
+        public double Min(Func<T, double> selector)
+        {
+            var values = Values.Select(selector);
+            if (!values.Any()) return 0;
+
+            return values.Min();
+        }
+
+        public double Max(Func<T, double> selector)
+        {
+            var values = Values.Select(selector);
+            if (!values.Any()) return 0;
+            return values.Max();
+        }
+
+        public double Avg(Func<T, double> selector)
+        {
+            var values = Values.Select(selector);
+            if (!values.Any()) return 0;
+            
+            return values.Average();
+        }
+        
+        public double MME(Func<T, double> selector)
+        {
+            var values = Values.Select(selector);
+            if (!values.Any()) return 0;
+
+            return values.Aggregate((mmeBefore, mmeApres) => (mmeBefore + mmeApres) / 2.0);
+        }
 
         public int Count => _data.Count();
         public IEnumerable<T> Values => _data;
