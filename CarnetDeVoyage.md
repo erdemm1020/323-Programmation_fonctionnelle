@@ -284,7 +284,7 @@ Pour commencer, on regarde la [théorie de l'agrégation](./supports/source/04-R
 
 Et ensuite, on met tout cela en pratique avec [l'exercice 5](./exos/fil-rouge/esport/05-classement-fold/) du fil rouge.
 
-## Bilan
+#### Bilan
 
 Un mot : Inquiétude
 
@@ -307,3 +307,28 @@ L'IA n'est **PAS** votre amie si vous l'utilisez pour faire le travail que je vo
 Comme je l'ai dit ce matin, ce feedback ne s'applique pas entièrement à chacun d'entre vous. Ceux qui ne sont que pas - ou peu - concernés sauront se reconnaître.
 
 En termes d'avancement dans l'exercice 5, il est globalement inexistant. Il y a quatre implémentations de MME en tout dont deux ne me semblent pas avoir été écrites par leurs propriétaires. En d'autres termes: la partie 5.1 est très partiellement entamée et c'est tout.
+
+## Etape 6
+
+### Lundi 21 septembre
+
+Remise en route après deux semaines d'inactivité sur le projet:
+
+- Bien faire le point de situation de son projet: après la semaine prochaine (donc dans 8 périodes), on arrive au 80%
+- Compléter la partie bilan du rapport si votre planification initiale prévoyait du travail lundi passé et qu'il n'a pas été fait...
+- Je me renseigne sur Avalonia
+- Chacun avance et je tourne parmi vous
+
+#### Bilan
+
+- J'ai pu passer vers toutes les personnes que je n'ai pas vues la dernière fois
+- J'ai eu des réponses diverses sur Avalonia. Rappel: le contenu de votre repo doit me permettre d'exécuter votre app. Si je ne connais pas la techno, votre rapport doit me guider!
+- La consigne concernant le jdt a bien passé: tous (sauf un -> joker brûlé) l'ont mis à jour
+
+### Mercredi 30
+
+On fait le checkpoint #5 qui porte principalement sur la réduction.
+
+On fait l'évaluation formative (correction en DoJo après la pause).
+
+Chacun continue les étapes de ESportApp
