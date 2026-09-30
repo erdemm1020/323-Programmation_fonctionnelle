@@ -122,6 +122,18 @@ DataSerie<LolMatch> lol =
 // TODO 00: Changer le numéro de version dans le help et faire un commit de départ
 
 
+
+// TODO 2
+
+if (player != null)
+{
+    valorant = DataSerie<ValorantMatch>.From(valorant.Values.Where(vp => vp.Player == player));
+    cs2 = DataSerie<Cs2Match>.From(cs2.Values.Where(csp => csp.Player == player));
+    lol = DataSerie<LolMatch>.From(lol.Values.Where(lmp => lmp.Player == player));
+
+}
+
+
 // TODO 1
 
 if (game != null && !games.Contains(game))
@@ -154,20 +166,6 @@ else
 }
 
 
-
-// TODO 2
-
-if (player != null)
-{
-    DataSerie<ValorantMatch> isPlayerValid = valorant.Values.Where(p => p.Player == ""); 
-
-    return;
-}
-else
-{
-    Console.WriteLine("Jeu selectionnée : {0}", game);
-
-}
 
 
 
