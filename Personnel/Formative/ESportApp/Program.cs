@@ -10,7 +10,7 @@
 using DataSeries;
 using ESportApp;
 
-const string version = "Base formative";
+const string version = "Erdem";
 
 string[] knownFlags =
 {
