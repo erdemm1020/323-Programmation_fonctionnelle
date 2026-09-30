@@ -121,6 +121,9 @@ DataSerie<LolMatch> lol =
 
 // TODO 00: Changer le numéro de version dans le help et faire un commit de départ
 
+
+// TODO 1
+
 if (game != null && !games.Contains(game))
 {
     Console.WriteLine($"Jeu inconnu : {game} (attendu : {string.Join(", ", games)})");
@@ -141,8 +144,33 @@ else
         case "lol":
             Console.WriteLine(lol);
             break;
+
+         default:
+            Console.WriteLine(valorant);
+            Console.WriteLine(cs2);
+            Console.WriteLine(lol);
+            break;
     }
 }
+
+
+
+// TODO 2
+
+if (player != null)
+{
+    DataSerie<ValorantMatch> isPlayerValid = valorant.Values.Where(p => p.Player == ""); 
+
+    return;
+}
+else
+{
+    Console.WriteLine("Jeu selectionnée : {0}", game);
+
+}
+
+
+
 
 
 Console.WriteLine("That's all folks!");
