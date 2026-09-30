@@ -85,11 +85,6 @@ Dictionary<string, Func<LolMatch, bool>> lolFilters = new Dictionary<string, Fun
 string[] games = { "valorant", "cs2", "lol" };
 string[] filterModes = { "wins", "losses", "all" };
 
-if (game != null && !games.Contains(game))
-{
-    Console.WriteLine($"Jeu inconnu : {game} (attendu : {string.Join(", ", games)})");
-    return;
-}
 
 if (!filterModes.Contains(filterMode))
 {
@@ -126,9 +121,29 @@ DataSerie<LolMatch> lol =
 
 // TODO 00: Changer le numéro de version dans le help et faire un commit de départ
 
-Console.WriteLine(valorant);
-Console.WriteLine(cs2);
-Console.WriteLine(lol);
+if (game != null && !games.Contains(game))
+{
+    Console.WriteLine($"Jeu inconnu : {game} (attendu : {string.Join(", ", games)})");
+    return;
+}
+else
+{
+    Console.WriteLine("Jeu selectionnée : {0}", game);
+
+    switch (game)
+    {
+        case "valorant":
+            Console.WriteLine(valorant);
+            break;
+        case "cs2":
+            Console.WriteLine(cs2);
+            break;
+        case "lol":
+            Console.WriteLine(lol);
+            break;
+    }
+}
+
 
 Console.WriteLine("That's all folks!");
 
