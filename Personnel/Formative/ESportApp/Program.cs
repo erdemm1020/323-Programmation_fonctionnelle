@@ -113,14 +113,27 @@ DataSerie<LolMatch> lol =
 
 // TODO 06: Refactoriser avec SelectMany pour faire disparaître la boucle foreach
 
-// TODO 02: Appliquer le filtre par joueur
-
-// TODO 03: Appliquer le filtre par résultat
-
-// TODO 01: N'afficher que le ou les jeu demandés
-
 // TODO 00: Changer le numéro de version dans le help et faire un commit de départ
 
+
+// TODO 3
+
+    switch (filterMode)
+    {
+        case "wins":
+            valorant = DataSerie<ValorantMatch>.From(valorant.Values.Where(vw => vw.Won));
+            cs2 = DataSerie<Cs2Match>.From(cs2.Values.Where(cw => cw.Won));
+            lol = DataSerie<LolMatch>.From(lol.Values.Where(lw => lw.Won));
+            break;
+        
+        case "losses":
+            valorant = DataSerie<ValorantMatch>.From(valorant.Values.Where(vw => !vw.Won));
+            cs2 = DataSerie<Cs2Match>.From(cs2.Values.Where(cw => !cw.Won));
+            lol = DataSerie<LolMatch>.From(lol.Values.Where(lw => !lw.Won));
+            break;
+        default:
+            break;
+    }
 
 
 // TODO 2
